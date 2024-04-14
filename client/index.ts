@@ -88,8 +88,7 @@ async function OpenFolder(href: string) {
 function Save() {
 	const pages = [ ...document.body.querySelectorAll(".entry") ]
 		.map(x => x.getAttribute("data-src"))
-		.filter(x => x)
-		.reverse();
+		.filter(x => x);
 
 	localStorage.setItem("open-pages", pages.join("\n"));
 }
@@ -98,9 +97,10 @@ function Save() {
 
 
 
-async function AnimateDetailsChange(ev: MouseEvent) {
-	const elm = ev.currentTarget;
-	if (!(elm instanceof HTMLDetailsElement)) return;
+async function Expander(ev: MouseEvent) {
+	if (!(ev.target instanceof HTMLElement)) return;
+	const elm = ev.target.closest(".entry");
+	if (!elm) return;
 
 	ev.stopImmediatePropagation();
 	ev.stopPropagation();
@@ -111,7 +111,7 @@ async function AnimateDetailsChange(ev: MouseEvent) {
 	if (elm.hasAttribute("open")) elm.removeAttribute("open");
 	else elm.setAttribute("open", "true");
 }
-(window as any).AnimateDetailsChange = AnimateDetailsChange;
+(window as any).Expander = Expander;
 
 async function CloseEntry(ev: MouseEvent, closeBtn: HTMLDivElement) {
 	ev.stopImmediatePropagation();
@@ -132,7 +132,7 @@ async function CloseEntry(ev: MouseEvent, closeBtn: HTMLDivElement) {
 async function Startup() {
 	document.body.addEventListener("click", AnyClick);
 
-	const pages = (localStorage.getItem('open-pages') || "").split("\n");
+	const pages = (localStorage.getItem('open-pages') || "").split("\n").reverse();
 	for (const page of pages) {
 		await OpenEntry(page);
 	}

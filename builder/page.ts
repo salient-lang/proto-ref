@@ -19,9 +19,9 @@ export async function CreatePage(toolbar: string, path: string) {
 	<body>
 		${toolbar}
 		<div class="dashboard">
-			<details class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}" onclick="AnimateDetailsChange(event);">`
+			<div class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}">`
 				+ html
-			+`</details>
+			+`</div>
 		</div>
 	</body>
 </html>`;
@@ -55,8 +55,10 @@ function RenderPage(path: string, data: string) {
 	const pathFrag = path.split("/");
 	const { summary, details } = IngestPage(data);
 
-	const html = `<summary>`
+	const html = `<div class="expander" onclick="Expander(event)">`
 		+ `<span class="comment">${pathFrag.slice(2, -1).join("/")}</span>`
+		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
+	+ `</div>`
 		+ `<div>`
 			+ `<div class="signature">`
 				+ `<span class="name">${Path2Name(pathFrag[pathFrag.length-1])}</span> `
@@ -78,10 +80,8 @@ function RenderPage(path: string, data: string) {
 					) : "}")
 			+ `</div>`
 		+ `</div>`
-		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
 		+ `<div style="white-space: pre-wrap;">${summary.text}</div>`
-	+ `</summary>`
-	+ `<div style="white-space: pre-wrap;">${details}</div>`;
+	+ `<div class="details">${details}</div>`;
 
 	return { html, type: summary.type };
 }

@@ -69,14 +69,34 @@ a[folder][parent] + a[folder]:not([parent]) {
 	position: relative;
 }
 
-.entry .close {
-	position: absolute;
-	top: 0;
-	right: 0;
+.entry .expander {
+	display: flex;
+	gap: 5px;
 
-	font-size: 0.85em;
 	user-select: none;
 	cursor: pointer;
+}
+.entry .expander::before {
+	content: "+ ";
+}
+.entry[open] .expander::before {
+	content: "- ";
+}
+
+.entry .expander .comment {
+	flex-grow: 1;
+}
+
+.entry .close {
+	font-size: 0.85em;
+}
+
+.entry .details {
+	display: none;
+	white-space: pre-wrap;
+}
+.entry[open] .details {
+	display: block;
 }
 
 .entry .context {
@@ -84,7 +104,7 @@ a[folder][parent] + a[folder]:not([parent]) {
 	display: inline-block;
 }
 
-details.entry .signature {
+.entry .signature {
 	display: inline-block;
 	padding: 5px 10px;
 	margin: 5px 0px;
@@ -97,26 +117,26 @@ details.entry .signature {
 	border-radius: 5px;
 }
 
-details.entry .cluster {
+.entry .cluster {
 	display: inline-flex;
 	flex-direction: row;
 	gap: 0.6em;
 }
 
-details.entry .cluster .comment {
+.entry .cluster .comment {
 	display: none;
 }
 
-details.entry[open] .cluster {
+.entry[open] .cluster {
 	display: flex;
 	flex-direction: column;
 	gap: 0;
 }
-details.entry[open] .cluster .indent {
+.entry[open] .cluster .indent {
 	margin-left: 1em;
 }
 
-details.entry[open] .cluster .comment {
+.entry[open] .cluster .comment {
 	display: inline-block;
 }
 
