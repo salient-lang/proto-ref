@@ -1,4 +1,4 @@
-@typedef i32 /web-assembly/type/i32
+@refer i32 /web-assembly/type/i32
 Close an open file descriptor.
 @param fd: i32 - The file descriptor mapping to an open file to close.
 @return error: i32 - The function returns a `Result` containing an `Errno` value indicating the success or failure of the operation. An `Errno::Success` value indicates a successful closure.

@@ -1,5 +1,5 @@
 @function
-@typedef i32 /web-assembly/type/i32
+@refer i32 /web-assembly/type/i32
 @param address_family: i32 - The address family of the socket
 @param sock_type: i32 - The socket type, either datagram or stream
 @param sock_proto: i32 - The socket protocol

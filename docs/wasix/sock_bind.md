@@ -1,5 +1,5 @@
 @function
-@typedef i32 /web-assembly/type/i32
+@refer i32 /web-assembly/type/i32
 @param fd: i32 - The file descriptor of the socket to bind
 @param addr: i32 - A WebAssembly pointer to the address to bind the socket to
 @return error: i32

@@ -32,7 +32,9 @@ export async function CreatePage(toolbar: string, path: string) {
 	const document = `<!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<title>${name}</title>
+		<meta property="og:title" content="${name}"/>
 		<link rel="stylesheet" href="/main.css"/>
 		<script src="/index.js"></script>
 	</head>
@@ -56,10 +58,13 @@ export async function CreatePage(toolbar: string, path: string) {
 
 
 export async function CreateFolderPage(toolbar: string, path: string) {
+	const name = Path2Name(path);
 	const html = `<!DOCTYPE html>
 <html>
 	<head>
-		<title>${Path2Name(path)}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>${name}</title>
+		<meta property="og:title" content="${name}"/>
 		<link rel="stylesheet" href="/main.css"/>
 		<script src="/index.js"></script>
 	</head>
@@ -136,8 +141,8 @@ function IngestPage(data: string) {
 				returns.push(ProcessSignatureLine(definitions, rest));
 				break;
 			}
-			case "@typedef" : {
-				IngestTypedef(definitions, rest);
+			case "@refer" : {
+				IngestReferal(definitions, rest);
 				break;
 			}
 			case "@function": {
@@ -183,7 +188,7 @@ function ProcessSignatureLine(ctx: TypeDefMap, line: string) {
 	return { name, type, description }
 }
 
-function IngestTypedef(ctx: TypeDefMap, line: string) {
+function IngestReferal(ctx: TypeDefMap, line: string) {
 	const [ type, href ] = SplitString(line, " ");
 	ctx.set(type, href);
 }

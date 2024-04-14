@@ -1,6 +1,6 @@
 Duplicates a file handle.
 @function
-@typedef i32 /web-assembly/type/i32
+@refer i32 /web-assembly/type/i32
 @param file_descriptor: i32
 @return ret_fd: i32
 ---

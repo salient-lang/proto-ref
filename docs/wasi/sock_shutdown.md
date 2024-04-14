@@ -1,4 +1,4 @@
-@typedef i32 /web-assembly/type/i32
+@refer i32 /web-assembly/type/i32
 Shut down socket send and receive channels.
 @param fd: i32 - The file descriptor of the socket to shut down.
 @param how: i32 - Specifies which channels on the socket to shut down.
