@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+body {
+	margin: 0;
+
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 20px;
+
+	background-color: #272822;
+	font-family: Fira Code;
+	color: #f8f8f2;
+}
+
+a, a:visited {
+	color: inherit;
+}
+
+.toolbar {
+	display: flex;
+	flex-direction: column;
+
+	padding: 10px 0 10px 10px;
+}
+
+.toolbar a {
+	font-family: Fira Code;
+	text-decoration: none;
+
+	margin-top: 5px;
+	margin-left: 1.5em;
+}
+
+.toolbar a[folder][parent] {
+	margin-top: 0;
+	margin-left: 0;
+}
+.toolbar a[folder][parent]::before {
+	content: "↳"
+}
+
+.toolbar a[folder] {
+	margin-top: 0px;
+	margin-left: 0;
+	padding: 0 5px;
+}
+
+.toolbar a[folder]::before {
+	content: "📁"
+}
+
+a[folder][parent] + a[folder]:not([parent]) {
+	margin-top: 5px;
+}
+
+.dashboard {
+	margin: 10px 0;
+
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+}
+
+
+.entry {
+	position: relative;
+}
+
+.entry .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+
+	cursor: pointer;
+	user-select: none;
+}
+
+.entry .context {
+	font-style: italic;
+	display: inline-block;
+}
+
+details.entry .signature {
+	display: inline-block;
+	padding: 5px 10px;
+	margin: 5px 0px;
+
+	font-family: Fira Code;
+	font-size: 0.9em;
+	color: #f8f8f2;
+
+	background-color: #3e3d32;
+	border-radius: 5px;
+}
+
+details.entry .cluster {
+	display: inline-flex;
+	flex-direction: row;
+	gap: 0.6em;
+}
+
+details.entry .cluster .comment {
+	display: none;
+}
+
+details.entry[open] .cluster {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+details.entry[open] .cluster .indent {
+	margin-left: 1em;
+}
+
+details.entry[open] .cluster .comment {
+	display: inline-block;
+}
+
+
+.name {
+	color: #a6e22e;
+	font-style: italic;
+}
+
+.argument {
+	color: #fd971f;
+	font-style: italic;
+}
+
+.type {
+	color: #66d9ef !important;
+	font-style: italic;
+}
+
+.comment {
+	color: #75715e;
+	font-style: italic;
+}
