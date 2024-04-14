@@ -83,6 +83,7 @@ function RenderPage(path: string, data: string) {
 		+ `<a title="Open Folder" href="/${pathFrag.slice(2, -1).join("/")}" folder>🔗</a>`
 		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
 	+ `</div>`
+		+ `<div style="white-space: pre-wrap;">${summary.text}</div>`
 		+ `<div>`
 			+ `<div class="signature">`
 				+ `<span class="name">${Path2Name(pathFrag[pathFrag.length-1])}</span> `
@@ -95,7 +96,7 @@ function RenderPage(path: string, data: string) {
 					+`</div>`).join("")
 				+ `</div>`
 				+ (summary.type == "function"
-					? ("): "
+					? (") => "
 						+ `<div style="display: inline-block;">${summary.returns.map(p => `<div>`
 							+`<span class="argument">${p.name}</span>`
 							+`: ${p.type}`
@@ -104,7 +105,6 @@ function RenderPage(path: string, data: string) {
 					) : "}")
 			+ `</div>`
 		+ `</div>`
-		+ `<div style="white-space: pre-wrap;">${summary.text}</div>`
 	+ `<div class="details">${details}</div>`;
 
 	return { html, type: summary.type };
@@ -158,7 +158,7 @@ function IngestPage(data: string) {
 		summary: {
 			type,
 			params, returns,
-			text: summary
+			text: summary.slice(1)
 		},
 		details: secondary
 	}

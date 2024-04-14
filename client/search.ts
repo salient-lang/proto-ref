@@ -22,8 +22,8 @@ async function PreloadIndex() {
 	console.log("Loaded search index", json);
 
 	index = lunr(function () {
-		this.ref('name');
 		this.ref('href');
+		this.field('href');
 		this.field('name');
 		this.field('text');
 

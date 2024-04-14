@@ -17,6 +17,7 @@ async function GroupPaths (paths: string[]) {
 
 async function BuildDir(path: string) {
 	const paths = await readdir(path);
+	paths.sort();
 
 
 	for (let i=0; i<paths.length; i++) {

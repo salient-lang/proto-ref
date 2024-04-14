@@ -89,7 +89,8 @@ async function OpenFolder(href: string) {
 function Save() {
 	const pages = [ ...document.body.querySelectorAll(".entry") ]
 		.map(x => x.getAttribute("data-src"))
-		.filter(x => x);
+		.filter(x => x)
+		.reverse();
 
 	localStorage.setItem("open-pages", pages.join("\n"));
 }
@@ -134,7 +135,7 @@ async function CloseEntry(ev: MouseEvent, closeBtn: HTMLDivElement) {
 async function Startup() {
 	document.body.addEventListener("click", AnyClick);
 
-	const pages = (localStorage.getItem('open-pages') || "").split("\n").reverse();
+	const pages = (localStorage.getItem('open-pages') || "").split("\n");
 	for (const page of pages) {
 		await OpenEntry(page);
 	}
