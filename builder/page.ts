@@ -19,7 +19,7 @@ export async function CreatePage(toolbar: string, path: string) {
 	<body>
 		${toolbar}
 		<div class="dashboard">
-			<details class="entry" data-src="${Reroute(path)}">${html}</details>
+			<details class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}">${html}</details>
 		</div>
 	</body>
 </html>`;
@@ -76,7 +76,7 @@ function RenderPage(path: string, data: string) {
 					) : "}")
 			+ `</div>`
 		+ `</div>`
-		+ `<div class="close" onclick="this.parentNode.parentNode.remove();">Close</div>`
+		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
 		+ `<div style="white-space: pre-wrap;">${summary.text}</div>`
 	+ `</summary>`
 	+ `<div style="white-space: pre-wrap;">${details}</div>`;
