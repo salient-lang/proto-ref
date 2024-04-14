@@ -13,7 +13,7 @@ export function CreateToolbar(href: string, folders: string[], files: string[]) 
 		}
 	);
 
-	return `<div class="toolbar" style="display: flex; flex-direction: column;">
+	return `<div class="toolbar">
 	${href !== "./docs" ? `<a href="/" parent folder> Index</a>` : ""}
 	${parents.map(x =>
 	`<a href="${x.path}" parent folder>

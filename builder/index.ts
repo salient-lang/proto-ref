@@ -1,6 +1,7 @@
 import { CreateFolderPage, CreatePage } from "./page";
-import { readdir, stat, mkdir } from "fs/promises";
+import { readdir, stat, mkdir, writeFile } from "fs/promises";
 import { CreateToolbar } from "./toolbar";
+import * as Search from "./search";
 
 console.info("Building Docs...");
 
@@ -30,6 +31,9 @@ async function BuildDir(path: string) {
 	await CreateFolderPage(toolbar, path);
 
 	await Promise.all(folders.map(BuildDir));
+
+
+	writeFile("./public/search.json", Search.Jsonify());
 }
 
 

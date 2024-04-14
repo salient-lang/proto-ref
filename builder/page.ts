@@ -1,27 +1,50 @@
 import { readFile, writeFile } from "fs/promises";
 import { Path2Name, Reroute } from "./helper";
+import { AddIndex } from "./search";
+
+
+const search = `<div id="search">
+	<div>
+		<input id="search-input"
+			type="text" name="q"
+			placeholder="type..."
+			aria-labelledby="Search"
+			autoComplete="off"
+		/>
+		<div class="placeholder">Search</div>
+	</div>
+	<div class="results"></div>
+</div>`;
 
 export async function CreatePage(toolbar: string, path: string) {
 	const extIndex = path.lastIndexOf(".");
 	const ext = path.slice(extIndex);
 	if (ext != ".md") return;
 
+	const name = Path2Name(path);
+	const href  = Reroute(path);
+
 	const data = await readFile(path, "utf8");
 	const { html, type } = RenderPage(path, data);
+
+	AddIndex({ href, name, text: data });
 
 	const document = `<!DOCTYPE html>
 <html>
 	<head>
-		<title>${Path2Name(path)}</title>
+		<title>${name}</title>
 		<link rel="stylesheet" href="/main.css"/>
 		<script src="/index.js"></script>
 	</head>
 	<body>
 		${toolbar}
 		<div class="dashboard">
-			<div class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}">`
-				+ html
-			+`</div>
+			${search}
+			<div class="stash">
+				<div class="entry" style="view-transition-name: ${href.replaceAll("/", "_")}" data-src="${href}">`
+					+ html
+				+`</div>
+			</div>
 		</div>
 	</body>
 </html>`;
@@ -42,7 +65,7 @@ export async function CreateFolderPage(toolbar: string, path: string) {
 	</head>
 	<body>
 		${toolbar}
-		<div class="dashboard"></div>
+		<div class="dashboard">${search}<div class="stash"></div></div>
 	</body>
 </html>`;
 
@@ -57,6 +80,7 @@ function RenderPage(path: string, data: string) {
 
 	const html = `<div class="expander" onclick="Expander(event)">`
 		+ `<span class="comment">${pathFrag.slice(2, -1).join("/")}</span>`
+		+ `<a title="Open Folder" href="/${pathFrag.slice(2, -1).join("/")}" folder>🔗</a>`
 		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
 	+ `</div>`
 		+ `<div>`

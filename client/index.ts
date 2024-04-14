@@ -1,4 +1,5 @@
 import { TransitionStart } from "./helper";
+import * as Search from "./search";
 
 const parser = new DOMParser();
 
@@ -28,8 +29,8 @@ function AnyClick(ev: MouseEvent) {
 }
 
 async function OpenEntry(href: string, caller?: HTMLElement) {
-	const dashboard = document.querySelector(".dashboard");
-	if (!dashboard) throw new Error("Missing dashboard element");
+	const stash = document.querySelector(".stash");
+	if (!stash) throw new Error("Missing stash element");
 
 	const existing = FindOpenEntry(href);
 
@@ -45,8 +46,8 @@ async function OpenEntry(href: string, caller?: HTMLElement) {
 	await TransitionStart();
 	if (existing) existing.remove();
 	if (caller) caller.style.removeProperty('view-transition-name');
-	dashboard.insertBefore(entry, dashboard.firstChild);
-	dashboard.scrollTo({top: 0});
+	stash.insertBefore(entry, stash.firstChild);
+	stash.scrollTo({top: 0});
 
 	const title = doc.querySelector("title")?.innerText || document.title;
 	history.replaceState({}, title, href);
@@ -66,7 +67,7 @@ function FindOpenEntry(href: string) {
 
 async function OpenFolder(href: string) {
 	const current = document.querySelector(".toolbar");
-	if (!current) throw new Error("Missing dashboard element");
+	if (!current) throw new Error("Missing stash element");
 
 	const req = await fetch(href);
 	if (!req.ok) throw new Error(`Failed to load ${href}`);
@@ -99,6 +100,7 @@ function Save() {
 
 async function Expander(ev: MouseEvent) {
 	if (!(ev.target instanceof HTMLElement)) return;
+	if (ev.target instanceof HTMLAnchorElement) return;
 	const elm = ev.target.closest(".entry");
 	if (!elm) return;
 
@@ -136,6 +138,8 @@ async function Startup() {
 	for (const page of pages) {
 		await OpenEntry(page);
 	}
+
+	Search.Bind();
 }
 
 window.addEventListener("load", Startup);
