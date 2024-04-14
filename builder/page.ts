@@ -19,7 +19,9 @@ export async function CreatePage(toolbar: string, path: string) {
 	<body>
 		${toolbar}
 		<div class="dashboard">
-			<details class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}">${html}</details>
+			<details class="entry" style="view-transition-name: ${Reroute(path).replaceAll("/", "_")}" data-src="${Reroute(path)}" onclick="AnimateDetailsChange(event);">`
+				+ html
+			+`</details>
 		</div>
 	</body>
 </html>`;

@@ -55,21 +55,6 @@ async function OpenEntry(href: string, caller?: HTMLElement) {
 	Save();
 }
 
-async function CloseEntry(ev: MouseEvent, closeBtn: HTMLDivElement) {
-	ev.stopImmediatePropagation();
-	ev.stopPropagation();
-	ev.preventDefault();
-
-	await TransitionStart();
-
-	const entry = closeBtn.closest(".entry");
-	if (!entry) return;
-
-	entry.remove();
-	Save();
-}
-(window as any).CloseEntry = CloseEntry;
-
 function FindOpenEntry(href: string) {
 	for (const div of document.body.querySelectorAll(".entry")) {
 		if (div.getAttribute("data-src") == href) return div;
@@ -103,10 +88,45 @@ async function OpenFolder(href: string) {
 function Save() {
 	const pages = [ ...document.body.querySelectorAll(".entry") ]
 		.map(x => x.getAttribute("data-src"))
-		.filter(x => x);
+		.filter(x => x)
+		.reverse();
 
 	localStorage.setItem("open-pages", pages.join("\n"));
 }
+
+
+
+
+
+async function AnimateDetailsChange(ev: MouseEvent) {
+	const elm = ev.currentTarget;
+	if (!(elm instanceof HTMLDetailsElement)) return;
+
+	ev.stopImmediatePropagation();
+	ev.stopPropagation();
+	ev.preventDefault();
+
+	await TransitionStart();
+
+	if (elm.hasAttribute("open")) elm.removeAttribute("open");
+	else elm.setAttribute("open", "true");
+}
+(window as any).AnimateDetailsChange = AnimateDetailsChange;
+
+async function CloseEntry(ev: MouseEvent, closeBtn: HTMLDivElement) {
+	ev.stopImmediatePropagation();
+	ev.stopPropagation();
+	ev.preventDefault();
+
+	await TransitionStart();
+
+	const entry = closeBtn.closest(".entry");
+	if (!entry) return;
+
+	entry.remove();
+	Save();
+}
+(window as any).CloseEntry = CloseEntry;
 
 
 async function Startup() {
