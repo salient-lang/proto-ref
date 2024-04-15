@@ -10,9 +10,22 @@ body {
 	min-height: 100vh;
 	font-size: 0.8rem;
 
-	background-color: #272822;
+	background-color: var(--bg);
 	font-family: Fira Code;
-	color: #f8f8f2;
+	color: var(--fg);
+
+	--bg:   #272822;
+	--bg_h: #3e3d32;
+	--bg_c: #75715e;
+	--fg:   #f8f8f2;
+	--yellow:  #e6db74;
+	--orange:  #fd971f;
+	--red:     #f92672;
+	--magenta: #fd5ff0;
+	--violet:  #ae81ff;
+	--blue:    #66d9ef;
+	--cyan:    #a1efe4;
+	--green:   #a6e22e;
 }
 
 a, a:visited {
@@ -43,7 +56,7 @@ a, a:visited {
 	margin-top: 0;
 	margin-left: 0;
 
-	background-color: #3e3d32;
+	background-color: var(--bg_h);
 	padding: 3px 10px;
 }
 .toolbar a[folder][parent]::before {
@@ -90,14 +103,14 @@ a[folder][parent] + a[folder]:not([parent]) {
 .entry .expander {
 	display: flex;
 	align-items: center;
-	gap: 5px;
+	gap: 10px;
 
 	user-select: none;
 }
 .entry .expander::before {
 	content: "+";
 	font-size: 1.3rem;
-	margin-right: 0.2rem;
+	margin-right: 0rem;
 	cursor: pointer;
 }
 .entry[open] .expander::before {
@@ -106,7 +119,6 @@ a[folder][parent] + a[folder]:not([parent]) {
 
 .entry .expander a {
 	text-decoration: none;
-	flex-grow: 1;
 }
 
 .entry .close {
@@ -121,6 +133,12 @@ a[folder][parent] + a[folder]:not([parent]) {
 .entry[open] .details {
 	display: block;
 }
+.entry .inline-details {
+	display: none;
+}
+.entry[open] .inline-details {
+	display: inline;
+}
 
 .entry .context {
 	font-style: italic;
@@ -134,9 +152,9 @@ a[folder][parent] + a[folder]:not([parent]) {
 
 	font-family: Fira Code;
 	font-size: 0.8rem;
-	color: #f8f8f2;
+	color: var(--fg);
 
-	background-color: #3e3d32;
+	background-color: var(--bg_h);
 	border-radius: 5px;
 }
 
@@ -144,13 +162,6 @@ a[folder][parent] + a[folder]:not([parent]) {
 	display: inline-flex;
 	flex-direction: row;
 	gap: 0.6rem;
-}
-
-.entry .comment {
-	display: none;
-}
-.entry[open] .comment {
-	display: inline;
 }
 
 .entry[open] .cluster {
@@ -165,21 +176,21 @@ a[folder][parent] + a[folder]:not([parent]) {
 
 
 .name {
-	color: #a6e22e;
+	color: var(--green);
 }
 
 .argument {
-	color: #fd971f;
+	color: var(--orange);
 	font-style: italic;
 }
 
 .type {
-	color: #66d9ef !important;
+	color: var(--blue) !important;
 	font-style: italic;
 }
 
 .comment {
-	color: #75715e;
+	color: var(--bg_c);
 	font-style: italic;
 }
 
@@ -288,4 +299,7 @@ a[folder][parent] + a[folder]:not([parent]) {
 #search .result .comment {
 	font-style: normal;
 	margin-left: 0.5rem;
+}
+#search .result[selected] {
+	background-color: var(--bg_h);
 }

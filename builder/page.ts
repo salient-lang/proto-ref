@@ -80,12 +80,14 @@ export async function CreateFolderPage(toolbar: string, path: string) {
 
 
 function RenderPage(path: string, data: string) {
-	const pathFrag = path.split("/");
+	const pathFrag = path.split("/").slice(2);
 	const { summary, details } = IngestPage(data);
 
 	const html = `<div class="expander" onclick="Expander(event)">`
-		+ `<span class="comment">${pathFrag.slice(2, -1).join("/")}</span>`
-		+ `<a title="Open Folder" href="/${pathFrag.slice(2, -1).join("/")}" folder>🔗</a>`
+		+ `<span class="comment">${pathFrag.slice(0, -1).join("/")}</span>`
+		+ `<a class="inline-details" title="Link" href="/${pathFrag.join("/")}" entry>🔗</a>`
+		+ `<a class="inline-details" title="Open Folder" href="/${pathFrag.slice(0, -1).join("/")}" folder>📂</a>`
+		+ `<div style="flex-grow: 1;"></div>`
 		+ `<div class="close" onclick="CloseEntry(event, this);">Close</div>`
 	+ `</div>`
 		+ `<div style="white-space: pre-wrap;">${summary.text}</div>`
@@ -97,7 +99,7 @@ function RenderPage(path: string, data: string) {
 					+ summary.params.map(p => `<div class="indent">`
 						+`<span class="argument">${p.name}</span>`
 						+`: ${p.type}`
-						+ `<span class="comment" style="margin-left: 1em;">${p.description}</span>`
+						+ `<span class="comment inline-details" style="margin-left: 1em;">${p.description}</span>`
 					+`</div>`).join("")
 				+ `</div>`
 				+ (summary.type == "function"
@@ -105,7 +107,7 @@ function RenderPage(path: string, data: string) {
 						+ `<div style="display: inline-block;">${summary.returns.map(p => `<div>`
 							+`<span class="argument">${p.name}</span>`
 							+`: ${p.type}`
-							+ `<span class="comment" style="margin-left: 1em;">&nbsp;${p.description}</span>`
+							+ `<span class="comment inline-details" style="margin-left: 1em;">&nbsp;${p.description}</span>`
 						+`</div>`).join("")}</div>`
 					) : "}")
 			+ `</div>`

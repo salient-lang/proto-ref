@@ -28,7 +28,7 @@ function AnyClick(ev: MouseEvent) {
 	}
 }
 
-async function OpenEntry(href: string, caller?: HTMLElement) {
+async function OpenEntry(href: string, caller?: HTMLElement, pushEnd: boolean = false) {
 	const stash = document.querySelector(".stash");
 	if (!stash) throw new Error("Missing stash element");
 
@@ -43,10 +43,12 @@ async function OpenEntry(href: string, caller?: HTMLElement) {
 	if (!entry) throw new Error("Route is missing div.entry");
 
 	if (!existing && caller) caller.style.setProperty('view-transition-name', href.replaceAll("/", "_"));
-	await TransitionStart();
+	if (!pushEnd) await TransitionStart();
 	if (existing) existing.remove();
 	if (caller) caller.style.removeProperty('view-transition-name');
-	stash.insertBefore(entry, stash.firstChild);
+
+	if (pushEnd) stash.appendChild(entry);
+	else stash.insertBefore(entry, stash.firstChild);
 	stash.scrollTo({top: 0});
 
 	const title = doc.querySelector("title")?.innerText || document.title;
@@ -55,6 +57,8 @@ async function OpenEntry(href: string, caller?: HTMLElement) {
 
 	Save();
 }
+(window as any).OpenEntry = OpenEntry;
+
 
 function FindOpenEntry(href: string) {
 	for (const div of document.body.querySelectorAll(".entry")) {
@@ -89,8 +93,7 @@ async function OpenFolder(href: string) {
 function Save() {
 	const pages = [ ...document.body.querySelectorAll(".entry") ]
 		.map(x => x.getAttribute("data-src"))
-		.filter(x => x)
-		.reverse();
+		.filter(x => x);
 
 	localStorage.setItem("open-pages", pages.join("\n"));
 }
@@ -137,7 +140,7 @@ async function Startup() {
 
 	const pages = (localStorage.getItem('open-pages') || "").split("\n");
 	for (const page of pages) {
-		await OpenEntry(page);
+		await OpenEntry(page, undefined, true);
 	}
 
 	Search.Bind();
