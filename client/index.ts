@@ -56,9 +56,11 @@ async function OpenEntry(href: string, caller?: HTMLElement, automated: boolean 
 	else stash.insertBefore(entry, stash.firstChild);
 	stash.scrollTo({top: 0});
 
-	const title = doc.querySelector("title")?.innerText || document.title;
-	history.replaceState({}, title, href);
-	document.title = title;
+	if (!automated) {
+		const title = doc.querySelector("title")?.innerText || document.title;
+		history.replaceState({}, title, href);
+		document.title = title;
+	}
 
 	Save();
 }
