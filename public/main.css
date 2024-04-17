@@ -64,7 +64,7 @@ a, a:visited {
 	text-decoration: none;
 
 	margin-top: 5px;
-	margin-left: 1.6rem;
+	margin-left: 1rem;
 
 	padding: 0 10px;
 }
@@ -192,10 +192,8 @@ a[folder][parent] + a[folder]:not([parent]) {
 	display: grid;
 	grid-template-columns: auto auto 1fr;
 	gap: 0 0.8em;
-}
-.entry[open] .cluster .indent {
-	margin-left: 2rem;
-	text-indent: -1rem;
+
+	padding-left: 1em;
 }
 
 
@@ -238,7 +236,7 @@ a[folder][parent] + a[folder]:not([parent]) {
 	position: relative;
 
 	padding: 0rem 10px;
-	width: 300px;
+	width: 100%;
 
 	transition-property: width;
 	transition-duration: .2s;
@@ -273,7 +271,7 @@ a[folder][parent] + a[folder]:not([parent]) {
 	inset: 12px 0px 0px;
 
 	height: 20px;
-	width: 340px;
+	width: 100%;
 
 	font-weight: 100;
 	text-align: center;
@@ -288,9 +286,6 @@ a[folder][parent] + a[folder]:not([parent]) {
 	transition-timing-function: ease-out;
 }
 
-#search:focus-within > * {
-	width: calc(100% - 2rem);
-}
 #search:focus-within input {
 	opacity: 100;
 }
@@ -303,8 +298,10 @@ a[folder][parent] + a[folder]:not([parent]) {
 	display: none;
 
 	position: absolute;
-	top: 45px; left: 15px; right: 0;
+	top: 45px; left: 15px;
 	z-index: 20;
+
+	width: calc(100% - 30px);
 
 	padding: 10px 0px;
 

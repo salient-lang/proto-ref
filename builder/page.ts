@@ -83,7 +83,7 @@ export async function RenderInnerPage(path: string) {
 	const data = await readFile(path, "utf8");
 	const { html, type } = RenderPage(path, data);
 
-	AddIndex({ href, name, text: data });
+	AddIndex({ href, name, text: data, type });
 
 	return { html, type, path }
 }

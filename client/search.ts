@@ -10,7 +10,10 @@ let searchElm: HTMLInputElement;
 let loading = false;
 let timer: NodeJS.Timeout;
 let index: lunr.Index;
-const naming = new Map<string, string>();
+const naming: Map<string, {
+	name: string,
+	type: string
+}> = new Map();
 
 async function PreloadIndex() {
 	if (loading) return;
@@ -20,7 +23,7 @@ async function PreloadIndex() {
 	if (!req.ok) throw new Error(req.statusText);
 
 	const json = await req.json();
-	console.info("Loaded search index", json);
+	console.info("Loaded search index", json.length);
 
 	index = lunr(function () {
 		this.ref('href');
@@ -29,7 +32,10 @@ async function PreloadIndex() {
 		this.field('text');
 
 		for (const item of json) {
-			naming.set(item.href, item.name);
+			naming.set(item.href, {
+				name: item.name,
+				type: item.type
+			});
 			this.add(item);
 		}
 	});
@@ -80,18 +86,24 @@ function Search() {
 	resultsElm.innerHTML = "";
 
 	for (const opt of res) {
-		const elm = document.createElement("a");
-		elm.className = "result";
-		elm.innerText = naming.get(opt.ref) || "Unknown";
-		elm.href = opt.ref;
-		elm.setAttribute("entry", "true");
+		const ref = naming.get(opt.ref);
+
+		const line = document.createElement("a");
+		line.className = "result";
+		line.href = opt.ref;
+		line.setAttribute("entry", "true");
+
+		const name = document.createElement("span");
+		name.innerText = ref?.name || "Unknown";
+		if (ref) name.className = ref.type === "function" ? "name" : "type";
+		line.appendChild(name);
 
 		const ctx = document.createElement("span");
 		ctx.innerText = opt.ref.split("/").slice(0, -1).join("/");
 		ctx.className = "comment";
-		elm.appendChild(ctx);
+		line.appendChild(ctx);
 
-		resultsElm.appendChild(elm);
+		resultsElm.appendChild(line);
 	}
 }
 
