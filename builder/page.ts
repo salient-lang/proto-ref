@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "fs/promises";
-import { Path2Name, Reroute } from "./helper";
+import { Path2Name, Reroute, SplitString } from "./helper";
 import { AddIndex } from "./search";
+import { RenderMarkdown } from "./markdown";
 
 
 const search = `<div id="search">
@@ -43,7 +44,7 @@ export async function CreatePage(toolbar: string, path: string) {
 		<div class="dashboard">
 			${search}
 			<div class="stash">
-				<div class="entry" style="view-transition-name: ${href.replaceAll("/", "_")}" data-src="${href}">`
+				<div class="entry" style="view-transition-name: ${href.replaceAll("/", "_")}" data-src="${href}" open>`
 					+ html
 				+`</div>
 			</div>
@@ -96,31 +97,31 @@ function RenderPage(path: string, data: string) {
 				+ `<span class="name">${Path2Name(pathFrag[pathFrag.length-1])}</span> `
 				+ (summary.type == "structure" ? "{" : "(")
 				+ `<div class="cluster">`
-					+ summary.params.map(p => `<div class="indent">`
-						+`<span class="argument">${p.name}</span>`
-						+`: ${p.type}`
-						+ `<span class="comment inline-details" style="margin-left: 1em;">${p.description}</span>`
-					+`</div>`).join("")
+					+ summary.params.map(p => ``
+						+ `<span class="argument">${p.name}</span>`
+						+ `<span>: <span>${p.type}</span></span>`
+						+ `<span class="comment inline-details">${p.description}</span>`
+					+``).join("")
 				+ `</div>`
 				+ (summary.type == "function"
 					? (") => "
-						+ `<div style="display: inline-block;">${summary.returns.map(p => `<div>`
-							+`<span class="argument">${p.name}</span>`
-							+`: ${p.type}`
-							+ `<span class="comment inline-details" style="margin-left: 1em;">&nbsp;${p.description}</span>`
-						+`</div>`).join("")}</div>`
+						+ `<div style="display: inline-block;">${summary.returns.map(p => ``
+							+ `<span class="argument">${p.name}</span>`
+							+ `<span>: <span>${p.type}</span></span>`
+							+ `<span class="comment inline-details">&nbsp;${p.description}</span>`
+						).join("")}</div>`
 					) : "}")
 			+ `</div>`
 		+ `</div>`
-	+ `<div class="details">${details}</div>`;
+	+ `<div class="details">${RenderMarkdown(details)}</div>`;
 
 	return { html, type: summary.type };
 }
 
 
-type TypeDefMap = Map<string, string>;
+export type TypeDefMap = Map<string, string>;
 function IngestPage(data: string) {
-	const [primary, ...secondary] = data.split(`\n---\n`);
+	const [primary, secondary] = SplitString(data, `\n---\n`);
 
 	let definitions = new Map<string, string>();
 	let type = "function";
@@ -169,14 +170,6 @@ function IngestPage(data: string) {
 		},
 		details: secondary
 	}
-}
-
-
-function SplitString(str: string, pivot: string) {
-	let index = str.indexOf(pivot);
-	if (index === -1) index = str.length;
-
-	return [ str.slice(0, index), str.slice(index+pivot.length) ];
 }
 
 function ProcessSignatureLine(ctx: TypeDefMap, line: string) {

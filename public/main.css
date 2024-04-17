@@ -128,7 +128,6 @@ a[folder][parent] + a[folder]:not([parent]) {
 
 .entry .details {
 	display: none;
-	white-space: pre-wrap;
 }
 .entry[open] .details {
 	display: block;
@@ -161,13 +160,18 @@ a[folder][parent] + a[folder]:not([parent]) {
 .entry .cluster {
 	display: inline-flex;
 	flex-direction: row;
-	gap: 0.6rem;
+	gap: 0;
+}
+
+.entry:not([open]) .cluster > *:nth-child(3n+4)::before {
+	content: ", ";
+	color: var(--fg);
 }
 
 .entry[open] .cluster {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
+	display: grid;
+	grid-template-columns: auto auto 1fr;
+	gap: 0 0.8em;
 }
 .entry[open] .cluster .indent {
 	margin-left: 2rem;

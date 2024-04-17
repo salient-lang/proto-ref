@@ -21,3 +21,11 @@ export function Reroute(path: string) {
 		: path
 	}`;
 }
+
+
+export function SplitString(str: string, pivot: string) {
+	let index = str.indexOf(pivot);
+	if (index === -1) index = str.length;
+
+	return [ str.slice(0, index), str.slice(index+pivot.length) ];
+}

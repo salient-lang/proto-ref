@@ -28,7 +28,7 @@ function AnyClick(ev: MouseEvent) {
 	}
 }
 
-async function OpenEntry(href: string, caller?: HTMLElement, pushEnd: boolean = false) {
+async function OpenEntry(href: string, caller?: HTMLElement, automated: boolean = false) {
 	const stash = document.querySelector(".stash");
 	if (!stash) throw new Error("Missing stash element");
 
@@ -43,13 +43,15 @@ async function OpenEntry(href: string, caller?: HTMLElement, pushEnd: boolean = 
 	if (!entry) throw new Error("Route is missing div.entry");
 
 	if (!existing && caller) caller.style.setProperty('view-transition-name', href.replaceAll("/", "_"));
-	if (!pushEnd) await TransitionStart();
+	if (!automated) await TransitionStart();
 	if (existing) existing.remove();
 	if (caller) caller.style.removeProperty('view-transition-name');
 
-	if (pushEnd) stash.appendChild(entry);
+	if (automated) stash.appendChild(entry);
 	else stash.insertBefore(entry, stash.firstChild);
 	stash.scrollTo({top: 0});
+
+	if (automated) entry.removeAttribute("open");
 
 	const title = doc.querySelector("title")?.innerText || document.title;
 	history.replaceState({}, title, href);
