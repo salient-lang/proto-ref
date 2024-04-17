@@ -1,9 +1,14 @@
 @refer i32 /web-assembly/type/i32
+
 Shut down socket send and receive channels.
 @param fd: i32 - The file descriptor of the socket to shut down.
 @param how: i32 - Specifies which channels on the socket to shut down.
 @return error: i32
 ---
+
+The `sock_shutdown()` function is used to shut down the send and receive channels of a socket. It is similar to the `shutdown` function in POSIX. The function allows you to selectively shut down either the send channel, the receive channel, or both channels of the socket.
+
+### Notes
 
 - The `sock_shutdown()` function allows you to shut down the send and/or receive channels of a socket.
 - The `how` parameter specifies which channels to shut down. It can take one of the following values:
