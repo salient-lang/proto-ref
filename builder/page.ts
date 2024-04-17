@@ -17,44 +17,36 @@ const search = `<div id="search">
 	<div class="results"></div>
 </div>`;
 
-export async function CreatePage(toolbar: string, path: string) {
-	const extIndex = path.lastIndexOf(".");
-	const ext = path.slice(extIndex);
-	if (ext != ".md") return;
+export async function WritePage(frag: PageFragment, toolbar: string) {
+	const { path, html } = frag;
 
+	const extIndex = path.lastIndexOf(".");
 	const name = Path2Name(path);
 	const href  = Reroute(path);
 
-	const data = await readFile(path, "utf8");
-	const { html, type } = RenderPage(path, data);
-
-	AddIndex({ href, name, text: data });
-
 	const document = `<!DOCTYPE html>
-<html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<title>${name}</title>
-		<meta property="og:title" content="${name}"/>
-		<link rel="stylesheet" href="/main.css"/>
-		<script src="/index.js"></script>
-	</head>
-	<body>
-		${toolbar}
-		<div class="dashboard">
-			${search}
-			<div class="stash">
-				<div class="entry" style="view-transition-name: ${href.replaceAll("/", "_")}" data-src="${href}" open>`
-					+ html
-				+`</div>
+	<html>
+		<head>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>${name}</title>
+			<meta property="og:title" content="${name}"/>
+			<link rel="stylesheet" href="/main.css"/>
+			<script src="/index.js"></script>
+		</head>
+		<body>
+			${toolbar}
+			<div class="dashboard">
+				${search}
+				<div class="stash">
+					<div class="entry" style="view-transition-name: ${href.replaceAll("/", "_")}" data-src="${href}" open>`
+						+ html
+					+`</div>
+				</div>
 			</div>
-		</div>
-	</body>
-</html>`;
+		</body>
+	</html>`;
 
-	writeFile(`./public/${path.slice(7, extIndex)}.html`, document);
-
-	return type;
+	writeFile(`./public/${frag.path.slice(7, extIndex)}.html`, document);
 }
 
 
@@ -79,10 +71,27 @@ export async function CreateFolderPage(toolbar: string, path: string) {
 }
 
 
+export type PageFragment = Awaited<ReturnType<typeof RenderInnerPage>>;
+export async function RenderInnerPage(path: string) {
+	const extIndex = path.lastIndexOf(".");
+	const ext = path.slice(extIndex);
+	if (ext != ".md") throw new Error(`Cannot render ${path}`);
+
+	const name = Path2Name(path);
+	const href  = Reroute(path);
+
+	const data = await readFile(path, "utf8");
+	const { html, type } = RenderPage(path, data);
+
+	AddIndex({ href, name, text: data });
+
+	return { html, type, path }
+}
+
 
 function RenderPage(path: string, data: string) {
 	const pathFrag = path.split("/").slice(2);
-	const { summary, details } = IngestPage(data);
+	const { summary, details, definitions } = IngestPage(data);
 
 	const html = `<div class="expander" onclick="Expander(event)">`
 		+ `<span class="comment">${pathFrag.slice(0, -1).join("/")}</span>`
@@ -99,21 +108,21 @@ function RenderPage(path: string, data: string) {
 				+ `<div class="cluster">`
 					+ summary.params.map(p => ``
 						+ `<span class="argument">${p.name}</span>`
-						+ `<span>: <span>${p.type}</span></span>`
-						+ `<span class="comment inline-details">${p.description}</span>`
+						+ `<span style="text-wrap: nowrap;">: <span>${p.type}</span></span>`
+						+ `<span class="comment inline-details">${p.description.trim()}</span>`
 					+``).join("")
 				+ `</div>`
 				+ (summary.type == "function"
 					? (") => "
 						+ `<div style="display: inline-block;">${summary.returns.map(p => ``
 							+ `<span class="argument">${p.name}</span>`
-							+ `<span>: <span>${p.type}</span></span>`
+							+ `<span style="text-wrap: nowrap;">: <span>${p.type}</span></span>`
 							+ `<span class="comment inline-details">&nbsp;${p.description}</span>`
 						).join("")}</div>`
 					) : "}")
 			+ `</div>`
 		+ `</div>`
-	+ `<div class="details">${RenderMarkdown(details)}</div>`;
+	+ `<div class="details">${RenderMarkdown(definitions, details)}</div>`;
 
 	return { html, type: summary.type };
 }
@@ -163,12 +172,13 @@ function IngestPage(data: string) {
 	}
 
 	return {
+		definitions,
 		summary: {
 			type,
 			params, returns,
-			text: summary.slice(1)
+			text: summary.slice(1).trim()
 		},
-		details: secondary
+		details: secondary.trim()
 	}
 }
 
@@ -180,7 +190,7 @@ function ProcessSignatureLine(ctx: TypeDefMap, line: string) {
 		? `<a class="type" href="${ctx.get(typeStr)}" entry>${typeStr}</a>`
 		: `<span class="type">${typeStr}</span>`;
 
-	return { name, type, description }
+	return {name, type, description }
 }
 
 function IngestReferal(ctx: TypeDefMap, line: string) {

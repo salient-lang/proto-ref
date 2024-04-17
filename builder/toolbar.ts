@@ -1,7 +1,7 @@
 import { Path2Name, Reroute } from "./helper";
+import { PageFragment } from "./page";
 
-export function CreateToolbar(href: string, folders: string[], files: string[]) {
-
+export function CreateToolbar(href: string, folders: string[], files: PageFragment[]) {
 	const pathFrags = href.split("/").slice(2); // ignore ./docs
 	const parents = pathFrags.map((x, i) => i == 0
 		? {
@@ -26,8 +26,8 @@ export function CreateToolbar(href: string, folders: string[], files: string[]) 
 	</a>`).join("\n\t")}
 
 	${files.map(x =>
-	`<a href="${Reroute(x)}" entry>
-		${Path2Name(x)}
+	`<a class="${x.type == "structure" ? "type" : "name"}" href="${Reroute(x.path)}" entry>
+		${Path2Name(x.path)}
 	</a>`).join("\n\t")}
 </div>`;
 }

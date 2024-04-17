@@ -7,12 +7,14 @@ body {
 	grid-template-columns: auto 1fr;
 	justify-items: center;
 
-	min-height: 100vh;
 	font-size: 0.8rem;
+	height: 100vh;
 
 	background-color: var(--bg);
 	font-family: Fira Code;
 	color: var(--fg);
+
+	overflow: hidden;
 
 	--bg:   #272822;
 	--bg_h: #3e3d32;
@@ -28,6 +30,20 @@ body {
 	--green:   #a6e22e;
 }
 
+table {
+	border-spacing: 10px 2px;
+}
+
+code {
+	padding: 1px 2px;
+
+	font-family: Fira Code;
+	color: var(--fg);
+
+	background-color: var(--bg_h);
+	border-radius: 5px;
+}
+
 a, a:visited {
 	color: inherit;
 }
@@ -38,8 +54,9 @@ a, a:visited {
 	min-width: 170px;
 
 	background-color: #1e1f1c;
-
 	padding: 0;
+
+	overflow-y: auto;;
 }
 
 .toolbar a {
@@ -83,6 +100,8 @@ a[folder][parent] + a[folder]:not([parent]) {
 	flex-direction: column;
 	align-items: center;
 	width: 100%;
+
+	overflow-y: auto;
 }
 
 .stash {
@@ -160,6 +179,7 @@ a[folder][parent] + a[folder]:not([parent]) {
 .entry .cluster {
 	display: inline-flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 	gap: 0;
 }
 
@@ -179,18 +199,20 @@ a[folder][parent] + a[folder]:not([parent]) {
 }
 
 
-.name {
-	color: var(--green);
-}
-
 .argument {
 	color: var(--orange);
 	font-style: italic;
 }
 
+.name {
+	color: var(--green) !important;
+	text-wrap: nowrap;
+}
+
 .type {
 	color: var(--blue) !important;
 	font-style: italic;
+	text-wrap: nowrap;
 }
 
 .comment {

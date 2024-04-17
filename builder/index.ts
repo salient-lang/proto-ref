@@ -1,4 +1,4 @@
-import { CreateFolderPage, CreatePage } from "./page";
+import { CreateFolderPage, RenderInnerPage, WritePage } from "./page";
 import { readdir, stat, mkdir, writeFile } from "fs/promises";
 import { CreateToolbar } from "./toolbar";
 import * as Search from "./search";
@@ -27,8 +27,10 @@ async function BuildDir(path: string) {
 	if (path !== "./docs") await mkdir(`./public/${path.slice(7)}`, { recursive: true });
 
 	const { files, folders } = await GroupPaths(paths);
-	const toolbar = CreateToolbar(path, folders, files);
-	await Promise.all(files.map(f => CreatePage(toolbar, f)));
+	const pageFragments = await Promise.all(files.map(RenderInnerPage));
+	const toolbar = CreateToolbar(path, folders, pageFragments);
+
+	await Promise.all(pageFragments.map(f => WritePage(f, toolbar)));
 	await CreateFolderPage(toolbar, path);
 
 	await Promise.all(folders.map(BuildDir));

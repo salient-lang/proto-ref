@@ -1,3 +1,5 @@
+@refer path_filestat_get /wasi/path_filestat_get
+
 @structure
 File attributes
 @param dev: u64 - Device ID of device containing the file
@@ -9,3 +11,4 @@ File attributes
 @param mtim: u64 - Last data modification timestamp
 @param ctim: u64 - Last file status change timestamp
 ---
+Used by {@function path_filestat_get}
