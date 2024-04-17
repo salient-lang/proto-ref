@@ -39,19 +39,22 @@ async function OpenEntry(href: string, caller?: HTMLElement, automated: boolean 
 
 	const doc = parser.parseFromString(await req.text(), "text/html");
 	const entry = doc.querySelector(".entry");
-
 	if (!entry) throw new Error("Route is missing div.entry");
 
+	// Prepare for insertion
 	if (!existing && caller) caller.style.setProperty('view-transition-name', href.replaceAll("/", "_"));
+	if (automated) entry.removeAttribute("open");
+
 	if (!automated) await TransitionStart();
+
+	// Removing existing/animation stuff
 	if (existing) existing.remove();
 	if (caller) caller.style.removeProperty('view-transition-name');
 
+	// Insert entry
 	if (automated) stash.appendChild(entry);
 	else stash.insertBefore(entry, stash.firstChild);
 	stash.scrollTo({top: 0});
-
-	if (automated) entry.removeAttribute("open");
 
 	const title = doc.querySelector("title")?.innerText || document.title;
 	history.replaceState({}, title, href);

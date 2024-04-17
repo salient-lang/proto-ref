@@ -11,7 +11,7 @@ async function GroupPaths (paths: string[]) {
 
 	return {
 		folders: paths.filter((_, i) => !stats[i].isFile()),
-		files:   paths.filter((_, i) =>  stats[i].isFile())
+		files:   paths.filter((f, i) =>  stats[i].isFile() && f.endsWith(".md"))
 	}
 }
 

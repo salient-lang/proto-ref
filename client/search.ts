@@ -38,6 +38,11 @@ async function PreloadIndex() {
 function Keypress(ev: KeyboardEvent) {
 	if (!(ev.target instanceof HTMLInputElement)) return;
 
+	if (ev.key === "Escape") {
+		ev.target.blur();
+		return;
+	}
+
 	if (ev.key === "Enter") {
 		ev.stopImmediatePropagation();
 		ev.stopPropagation();
@@ -69,7 +74,7 @@ function Search() {
 		return;
 	};
 
-	const res = index.search(searchElm.value+"*");
+	const res = index.search(`*${searchElm.value}*`);
 
 	if (!resultsElm) return;
 	resultsElm.innerHTML = "";
